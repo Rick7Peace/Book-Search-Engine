@@ -1,4 +1,3 @@
-
 const typeDefs = `
   type User {
     _id: ID
@@ -30,7 +29,6 @@ const typeDefs = `
     user: User
   }
   
-
   type Query {
     me: User
   }
@@ -40,9 +38,7 @@ const typeDefs = `
     addUser(username: String!, email: String!, password: String!): Auth
     saveBook(bookData: BookInput!): User
     removeBook(bookId: ID!): User
-
   }
 `;
 
 export default typeDefs;
-
