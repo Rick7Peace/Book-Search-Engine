@@ -1,14 +1,15 @@
 import { User } from '../models/index.js';
 import { signToken } from '../services/auth.js';
 import { AuthenticationError } from '../services/auth.js';
+import { UserDocument } from '../models/User.js';
 
 interface Context {
-  user?: User;
+  user?: UserDocument;
 }
   
 const resolvers = {
   Query: {
-    me: async (_parent: any, _args: any, context: any): Promise<User | null> => {
+    me: async (_parent: any, _args: any, context: any): Promise<UserDocument | null> => {
         if (!context.user) {
           // If user is authenticated, return their profile
           return await User.findOne({ _id: context.user._id }).populate('savedBooks');
@@ -16,15 +17,12 @@ const resolvers = {
         // If not authenticated, throw an authentication error
         throw new AuthenticationError('Not Authenticated');
       },
-      getUser: async (_parent: any, { username }: { username: string }): Promise<User | null> => {
-        return await User.findOne({ username }).populate('savedBooks');
-      }
     },
   
 
   Mutation: {
     // Set up sign in and sign up mutations
-    login: async (_parent: any, { email, password }: { email: string; password: string }): Promise<{ token: string; user: User }> => {
+    login: async (_parent: any, { email, password }: { email: string; password: string }): Promise<{ token: string; user: UserDocument }> => {
       // Find a profile by email
       const user = await User.findOne({ email });
 
@@ -41,20 +39,20 @@ const resolvers = {
       }
 
       // Sign a JWT token for the authenticated profile
-      const token = signToken(user.name, user.email, user._id);
+      const token = signToken(user.username, user.email, user._id);
       return { token, user };
     },
 
-    addUser: async (_parent: any, { username, email, password }: { username: string; email: string; password: string }): Promise<{ token: string; user: User }> => {
+    addUser: async (_parent: any, { username, email, password }: { username: string; email: string; password: string }): Promise<{ token: string; user: UserDocument }> => {
       // Create a new profile with provided name, email, and password
       const user = await User.create({ username, email, password });
       // Sign a JWT token for the new profile
-      const token = signToken(user.name, user.email, user._id);
+      const token = signToken(user.username, user.email, user._id);
 
       return { token, user };
     },
 
-    saveBook: async (_parent: any, { bookData }: { bookData: any }, context: Context): Promise<User | null> => {
+    saveBook: async (_parent: any, { bookData }: { bookData: any }, context: Context): Promise<UserDocument | null> => {
       if (context.user) {
         const updatedUser =
           await
@@ -68,7 +66,7 @@ const resolvers = {
       throw new AuthenticationError('You need to be logged in!');
     },
 
-    removeBook: async (_parent: any, { bookId }: { bookId: string }, context: Context): Promise<User | null> => {
+    removeBook: async (_parent: any, { bookId }: { bookId: string }, context: Context): Promise<UserDocument | null> => {
       if (context.user) {
         const updatedUser =
           await
