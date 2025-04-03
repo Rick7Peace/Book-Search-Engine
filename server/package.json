@@ -16,9 +16,9 @@
   "dependencies": {
     "@apollo/server": "^4.11.3",
     "bcrypt": "^4.0.1",
-    "brcypt": "^1.0.1",
     "express": "^4.19.2",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^6.15.0",
     "mongoose": "^8.0.0"
   },
   "devDependencies": {
