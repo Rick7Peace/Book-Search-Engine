@@ -25,6 +25,8 @@ export const authenticateToken = ({ req }: { req: Request }) => {
   }
 
   try {
+    console.log("Verifying token:", token);
+    console.log ("Secret key:", process.env.JWT_SECRET_KEY);
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET_KEY || ""

@@ -10,13 +10,12 @@ interface Context {
 const resolvers = {
   Query: {
     me: async (_parent: any, _args: any, context: any): Promise<UserDocument | null> => {
-        if (!context.user) {
+        if (context.user) {
           // If user is authenticated, return their profile
           return await User.findOne({ _id: context.user._id }).populate('savedBooks');
         }
         // If not authenticated, throw an authentication error
-        throw new AuthenticationError('Not Authenticated');
-      },
+        throw new AuthenticationError('Not Authenticated');}
     },
   
 
